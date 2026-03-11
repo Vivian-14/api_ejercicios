@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>API Ejercicios</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>API de Promedio</h1>
+
+<input id="nombre" placeholder="Nombre">
+<br>
+
+<input id="calificaciones" placeholder="Ej: 80,90,70">
+<br>
+
+<button onclick="calcularPromedio()">Calcular</button>
+
+<p id="resultadoPromedio"></p>
+
+<hr>
+
+<h1>Conversor de Temperatura</h1>
+
+<input id="valor" placeholder="Valor">
+<br>
+
+<select id="escala">
+<option value="celsius">Celsius</option>
+<option value="fahrenheit">Fahrenheit</option>
+</select>
+<br>
+
+<button onclick="convertir()">Convertir</button>
+
+<p id="resultadoTemp"></p>
+
+</div>
+
+<script>
+
+function calcularPromedio(){
+
+let nombre = document.getElementById("nombre").value
+let calificaciones = document.getElementById("calificaciones").value.split(",").map(Number)
+
+fetch("/promedio",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+nombre:nombre,
+calificaciones:calificaciones
+})
+})
+.then(res=>res.json())
+.then(data=>{
+document.getElementById("resultadoPromedio").innerText =
+"Promedio de "+data.nombre+": "+data.promedio
+})
+}
+
+function convertir(){
+
+let valor = parseFloat(document.getElementById("valor").value)
+let escala = document.getElementById("escala").value
+
+fetch("/convertir-temperatura",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+valor:valor,
+escala:escala
+})
+})
+.then(res=>res.json())
+.then(data=>{
+document.getElementById("resultadoTemp").innerText =
+"Resultado: "+data.resultado+" "+data.escala_convertida
+})
+}
+
+</script>
+
+</body>
+</html>
